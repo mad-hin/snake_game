@@ -1,6 +1,12 @@
 // grid part
-var $canvas = { element: null, width: null, height: null };
+var $canvas = {
+    element: null,
+    width: null,
+    height: null
+};
+
 var $ctx = null;
+
 var $grid = {
     maxRow: 30,
     maxCol: 50,
@@ -32,6 +38,7 @@ $(document).ready(function () {
     }
 });
 
+//initialize the grid boundary
 function init() {
     $canvas.element = document.getElementById('main-canvas');
     $canvas.width = $grid.maxCol * $grid.unitSize + ($grid.maxCol + 1) * $grid.unitGap;
@@ -40,6 +47,7 @@ function init() {
     $canvas.element.height = $canvas.height;
 }
 
+//draw the grid elements
 function drawGrid() {
     for (var row = 1; row <= $grid.maxRow; row++) {
         for (var col = 1; col <= $grid.maxCol; col++) {
@@ -47,3 +55,10 @@ function drawGrid() {
         }
     }
 }
+
+//snake part
+var $snake = {
+    head: { row: NaN, col: NaN },
+    body: [],
+    direction: null
+};
