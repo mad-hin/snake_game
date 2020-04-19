@@ -1,10 +1,12 @@
 var $canvas = {
     element: null,
     width: null,
-    height: null
+    height: null,
+    clear: function () { $ctx.clearRect(0, 0, this.width, this.height); }
 };
-
 var $ctx = null;
+
+var $gameIntervalID = null;
 
 var $grid = {
     maxRow: 30,
@@ -60,7 +62,7 @@ var $snake = {
             $grid.drawSquare(currentRow, currentCol, whiteColor(currentOpacity), 'fill');
         }
     },
-    setNextState: function () {
+    next: function () {
         switch (this.direction) {
             case 'left': this.head.col -= 1; this.body.unshift('r'); break;
             case 'right': this.head.col += 1; this.body.unshift('l'); break;
@@ -71,26 +73,30 @@ var $snake = {
     }
 };
 
-var $gameIntervalID = null;
-
 /* Main Function */
 $(document).ready(function () {
-    initializeGridSystem();
-    initializeSnake();
+    init();
+    initSnake();
     if ($canvas.element.getContext) {
         $ctx = $canvas.element.getContext('2d');
+        drawGrid();
+        $snake.draw();
+
         var setGameInterval = function () {
             $gameIntervalID = setInterval(function () {
-                drawFullGridSystem();
+                $canvas.clear();
+                drawGrid();
                 $snake.draw();
-            }, 1000);
+                $snake.next();
+            }, 200);
         }
         setGameInterval();
-        setKeyboardEvents();  // <==== ADD THIS LINE AND DEFINE THE FUNCTION BELOW
+        setKeyboard(); 
     }
 });
 
-function initializeGridSystem() {
+//initialize grid
+function init() {
     $canvas.element = document.getElementById('main-canvas');
     $canvas.width = $grid.maxCol * $grid.unitSize + ($grid.maxCol + 1) * $grid.unitGap;
     $canvas.height = $grid.maxRow * $grid.unitSize + ($grid.maxRow + 1) * $grid.unitGap;
@@ -98,7 +104,8 @@ function initializeGridSystem() {
     $canvas.element.height = $canvas.height;
 }
 
-function initializeSnake(direction, headPosition, bodyArray) {
+//initialize snake
+function initSnake(direction, headPosition, bodyArray) {
     $snake.direction = direction ? direction : 'left';
     if (headPosition && headPosition.row && headPosition.col) {
         $snake.head.row = headPosition.row;
@@ -110,7 +117,8 @@ function initializeSnake(direction, headPosition, bodyArray) {
     $snake.body = bodyArray ? bodyArray : ['r', 'r', 'r', 'r', 'r'];
 }
 
-function drawFullGridSystem() {
+//draw grid element
+function drawGrid() {
     for (var row = 1; row <= $grid.maxRow; row++) {
         for (var col = 1; col <= $grid.maxCol; col++) {
             $grid.drawSquare(row, col);
@@ -118,7 +126,8 @@ function drawFullGridSystem() {
     }
 }
 
-function setKeyboardEvents() {
+//keybord control
+function setKeyboard() {
     Mousetrap.bind('left', function () { if ($snake.direction != 'right') { $snake.direction = 'left'; } });
     Mousetrap.bind('right', function () { if ($snake.direction != 'left') { $snake.direction = 'right'; } });
     Mousetrap.bind('up', function () { if ($snake.direction != 'down') { $snake.direction = 'up'; } });
