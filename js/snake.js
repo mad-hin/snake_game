@@ -1,7 +1,10 @@
 var $canvas = {
     element: null,
     width: null,
-    height: null
+    height: null,
+    clear: function () {
+        $ctx.clearRect(0, 0, this.width, this.height);
+    }
 };
 
 var $ctx = null;
@@ -58,16 +61,32 @@ var $snake = {
             }
             $grid.drawSquare(currentRow, currentCol, whiteColor(currentOpacity), 'fill');
         }
+    },
+    next: function () {
+        switch (this.direction) {
+            case 'left': this.head.col -= 1; this.body.unshift('r'); break;
+            case 'right': this.head.col += 1; this.body.unshift('l'); break;
+            case 'up': this.head.row -= 1; this.body.unshift('b'); break;
+            case 'down': this.head.row += 1; this.body.unshift('t'); break;
+        }
+        this.body.pop();
     }
 };
+
+var $gameIntervalID = null;
 
 $(document).ready(function () {
     init();
     initSnake();
     if ($canvas.element.getContext) {
         $ctx = $canvas.element.getContext('2d');
-        drawGrid();
-        $snake.draw();
+        var setGameInterval = function () {
+            $gameIntervalID = setInterval(function () {
+                drawGrid();
+                $snake.draw();
+            }, 1000);
+        }
+        setGameInterval();
     }
 });
 
