@@ -5,11 +5,30 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Snake Game</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="js/snake.js"></script>
+    <link rel="stylesheet" href="css/main.css">
 </head>
 
 <body>
-    <button onclick="startgame()">Start new game</button>
+    <div class="main">
+        <div class="wrapper">
+            <div class="row">
+                <div class="col-lg-offset-3 col-lg-6 col-md-offset-3 col-md-6 col-sm-12 col-xs-12">
+                    <h1 id="main-title" class="text-center">Snake</h1>
+                </div>
+            </div>
+
+            <div id="main-section" class="row">
+                <div id="main-canvas-wrapper" class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <div id="main-canvas-container">
+                        <canvas id="main-canvas"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 
 </html>
