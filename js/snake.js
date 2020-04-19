@@ -128,8 +128,24 @@ function drawGrid() {
 
 //keybord control
 function setKeyboard() {
-    Mousetrap.bind('left', function () { if ($snake.direction != 'right') { $snake.direction = 'left'; } });
-    Mousetrap.bind('right', function () { if ($snake.direction != 'left') { $snake.direction = 'right'; } });
-    Mousetrap.bind('up', function () { if ($snake.direction != 'down') { $snake.direction = 'up'; } });
-    Mousetrap.bind('down', function () { if ($snake.direction != 'up') { $snake.direction = 'down'; } });
+    Mousetrap.bind('left', function () {
+        if ($snake.direction != 'right') {
+            $snake.direction = 'left';
+        }
+    });
+    Mousetrap.bind('right', function () {
+        if ($snake.direction != 'left') {
+            $snake.direction = 'right';
+        }
+    });
+    Mousetrap.bind('up', function () {
+        if ($snake.direction != 'down') {
+            $snake.direction = 'up';
+        }
+    });
+    Mousetrap.bind('down', function () {
+        if ($snake.direction != 'up') {
+            $snake.direction = 'down';
+        }
+    });
 }
