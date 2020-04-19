@@ -59,8 +59,25 @@ var $snake = {
             }
             $grid.drawSquare(currentRow, currentCol, whiteColor(currentOpacity), 'fill');
         }
+    },
+    setNextState: function () {
+        /*
+          According to the direction, change the head part and unshift the corresponding
+          body part to the body array. For instance, when moving "up", there will be one
+          more boby parts attached to the bottom of the head and so on.
+        */
+        switch (this.direction) {
+            case 'left': this.head.col -= 1; this.body.unshift('r'); break;
+            case 'right': this.head.col += 1; this.body.unshift('l'); break;
+            case 'up': this.head.row -= 1; this.body.unshift('b'); break;
+            case 'down': this.head.row += 1; this.body.unshift('t'); break;
+        }
+        /* Remove the last body part */
+        this.body.pop();
     }
 };
+
+var $gameIntervalID = null;
 
 /* Main Function */
 $(document).ready(function () {
@@ -68,8 +85,14 @@ $(document).ready(function () {
     initializeSnake();
     if ($canvas.element.getContext) {
         $ctx = $canvas.element.getContext('2d');
-        drawFullGridSystem();
-        $snake.draw();
+        /* Game Interval */
+        var setGameInterval = function () {
+            $gameIntervalID = setInterval(function () {
+                drawFullGridSystem();
+                $snake.draw();
+            }, 1000);
+        }
+        setGameInterval();
     }
 });
 
