@@ -63,13 +63,16 @@ var $snake = {
         }
     },
     next: function () {
-        switch (this.direction) {
-            case 'left': this.head.col -= 1; this.body.unshift('r'); break;
-            case 'right': this.head.col += 1; this.body.unshift('l'); break;
-            case 'up': this.head.row -= 1; this.body.unshift('b'); break;
-            case 'down': this.head.row += 1; this.body.unshift('t'); break;
+        if (ensureDoesNotCollideBorder()) {
+            switch (this.direction) {
+                case 'left': this.head.col -= 1; this.body.unshift('r'); break;
+                case 'right': this.head.col += 1; this.body.unshift('l'); break;
+                case 'up': this.head.row -= 1; this.body.unshift('b'); break;
+                case 'down': this.head.row += 1; this.body.unshift('t'); break;
+            }
+            this.body.pop();
         }
-        this.body.pop();
+        else gameover();
     }
 };
 
@@ -91,7 +94,7 @@ $(document).ready(function () {
             }, 200);
         }
         setGameInterval();
-        setKeyboard(); 
+        setKeyboard();
     }
 });
 
@@ -148,4 +151,20 @@ function setKeyboard() {
             $snake.direction = 'down';
         }
     });
+}
+
+function ensureDoesNotCollideBorder() {
+    var nextRow = $snake.head.row, nextCol = $snake.head.col;
+    switch ($snake.direction) {
+        case 'left': nextCol -= 1; break;
+        case 'right': nextCol += 1; break;
+        case 'up': nextRow -= 1; break;
+        case 'down': nextRow += 1; break;
+    }
+    return !(nextCol <= 0 || nextRow <= 0 || nextCol > $grid.maxCol || nextRow > $grid.maxRow);
+}
+
+function gameover() {
+    clearInterval($gameIntervalID);
+    $gameIntervalID = null;
 }
