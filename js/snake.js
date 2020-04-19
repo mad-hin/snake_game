@@ -1,10 +1,7 @@
 var $canvas = {
     element: null,
     width: null,
-    height: null,
-    clear: function () {
-        $ctx.clearRect(0, 0, this.width, this.height);
-    }
+    height: null
 };
 
 var $ctx = null;
@@ -50,6 +47,7 @@ var $snake = {
         var currentOpacity = 1, minimumOpacity = 0.4;
         var whiteColor = function (opacity) { return 'rgba(255, 255, 255, ' + opacity + ')'; };
         $grid.drawSquare(currentRow, currentCol, 'white', 'fill');
+
         for (var i = 0; i < this.body.length; i++) {
             currentOpacity = (this.body.length - i) / this.body.length;
             currentOpacity = currentOpacity > minimumOpacity ? currentOpacity : minimumOpacity;
@@ -61,37 +59,21 @@ var $snake = {
             }
             $grid.drawSquare(currentRow, currentCol, whiteColor(currentOpacity), 'fill');
         }
-    },
-    next: function () {
-        switch (this.direction) {
-            case 'left': this.head.col -= 1; this.body.unshift('r'); break;
-            case 'right': this.head.col += 1; this.body.unshift('l'); break;
-            case 'up': this.head.row -= 1; this.body.unshift('b'); break;
-            case 'down': this.head.row += 1; this.body.unshift('t'); break;
-        }
-        this.body.pop();
     }
 };
 
-var $gameIntervalID = null;
-
+/* Main Function */
 $(document).ready(function () {
-    init();
-    initSnake();
+    initializeGridSystem();
+    initializeSnake();
     if ($canvas.element.getContext) {
         $ctx = $canvas.element.getContext('2d');
-        var setGameInterval = function () {
-            $gameIntervalID = setInterval(function () {
-                drawGrid();
-                $snake.draw();
-            }, 1000);
-        }
-        setGameInterval();
+        drawFullGridSystem();
+        $snake.draw();
     }
 });
 
-//initialize the grid boundary
-function init() {
+function initializeGridSystem() {
     $canvas.element = document.getElementById('main-canvas');
     $canvas.width = $grid.maxCol * $grid.unitSize + ($grid.maxCol + 1) * $grid.unitGap;
     $canvas.height = $grid.maxRow * $grid.unitSize + ($grid.maxRow + 1) * $grid.unitGap;
@@ -99,16 +81,7 @@ function init() {
     $canvas.element.height = $canvas.height;
 }
 
-//draw the grid elements
-function drawGrid() {
-    for (var row = 1; row <= $grid.maxRow; row++) {
-        for (var col = 1; col <= $grid.maxCol; col++) {
-            $grid.drawSquare(row, col);
-        }
-    }
-}
-
-function initSnake(direction, headPosition, bodyArray) {
+function initializeSnake(direction, headPosition, bodyArray) {
     $snake.direction = direction ? direction : 'left';
     if (headPosition && headPosition.row && headPosition.col) {
         $snake.head.row = headPosition.row;
@@ -118,4 +91,12 @@ function initSnake(direction, headPosition, bodyArray) {
         $snake.head.col = Math.floor($grid.maxCol / 2);
     }
     $snake.body = bodyArray ? bodyArray : ['r', 'r', 'r', 'r', 'r'];
+}
+
+function drawFullGridSystem() {
+    for (var row = 1; row <= $grid.maxRow; row++) {
+        for (var col = 1; col <= $grid.maxCol; col++) {
+            $grid.drawSquare(row, col);
+        }
+    }
 }
