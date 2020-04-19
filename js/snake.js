@@ -86,6 +86,7 @@ $(document).ready(function () {
             }, 1000);
         }
         setGameInterval();
+        setKeyboardEvents();  // <==== ADD THIS LINE AND DEFINE THE FUNCTION BELOW
     }
 });
 
@@ -115,4 +116,11 @@ function drawFullGridSystem() {
             $grid.drawSquare(row, col);
         }
     }
+}
+
+function setKeyboardEvents() {
+    Mousetrap.bind('left', function () { if ($snake.direction != 'right') { $snake.direction = 'left'; } });
+    Mousetrap.bind('right', function () { if ($snake.direction != 'left') { $snake.direction = 'right'; } });
+    Mousetrap.bind('up', function () { if ($snake.direction != 'down') { $snake.direction = 'up'; } });
+    Mousetrap.bind('down', function () { if ($snake.direction != 'up') { $snake.direction = 'down'; } });
 }
