@@ -145,6 +145,7 @@ $(document).ready(function () {
         }
         setGameInterval();
         setKeyboard();
+        setMobileEvents();
     }
 });
 
@@ -243,4 +244,30 @@ function gameover() {
 function initapple() {
     $apple.coor.row = Math.floor(Math.random() * ($grid.maxRow + 1));
     $apple.coor.col = Math.floor(Math.random() * ($grid.maxCol + 1));
+}
+
+//mobile control
+function setMobileEvents() {
+    var hammer = new Hammer($canvas.element);
+    hammer.get('swipe').set({ direction: Hammer.DIRECTION_ALL })
+    hammer.on('swipeleft', function () {
+        if ($snake.direction != 'right') {
+            $snake.direction = 'left';
+        }
+    });
+    hammer.on('swiperight', function () {
+        if ($snake.direction != 'left') {
+            $snake.direction = 'right';
+        }
+    });
+    hammer.on('swipeup', function () {
+        if ($snake.direction != 'down') {
+            $snake.direction = 'up';
+        }
+    });
+    hammer.on('swipedown', function () {
+        if ($snake.direction != 'up') {
+            $snake.direction = 'down';
+        }
+    });
 }
