@@ -167,4 +167,7 @@ function ensureDoesNotCollideBorder() {
 function gameover() {
     clearInterval($gameIntervalID);
     $gameIntervalID = null;
+    if (!window.alert('Game Over!')) {
+        window.location.reload();
+    }
 }
