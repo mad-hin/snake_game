@@ -43,7 +43,7 @@ var $grid = {
 var $snake = {
     head: { row: NaN, col: NaN },
     body: [],
-    bodyPartDistribution: [],
+    bodyPart: [],
     direction: null,
     draw: function () {
         var currentRow = this.head.row, currentCol = this.head.col;
@@ -64,7 +64,7 @@ var $snake = {
         }
     },
     next: function () {
-        if (ensureDoesNotCollideBorder() && ensureDoesNotCollideItself()) {
+        if (hitBoundary() && hitItself()) {
             switch (this.direction) {
                 case 'left': this.head.col -= 1; this.body.unshift('r'); break;
                 case 'right': this.head.col += 1; this.body.unshift('l'); break;
@@ -79,16 +79,16 @@ var $snake = {
         }
     },
     updateBodyPartDistribution: function () {
-        $snake.bodyPartDistribution = [];
+        $snake.bodyPart = [];
         for (var row = 1; row <= $grid.maxRow; row++) {
-            $snake.bodyPartDistribution.push([]);
+            $snake.bodyPart.push([]);
             for (var col = 1; col <= $grid.maxCol; col++) {
-                $snake.bodyPartDistribution[row - 1].push(0);
+                $snake.bodyPart[row - 1].push(0);
             }
         }
 
         var currentRow = $snake.head.row, currentCol = $snake.head.col;
-        $snake.bodyPartDistribution[currentRow - 1][currentCol - 1] = 1;
+        $snake.bodyPart[currentRow - 1][currentCol - 1] = 1;
 
         for (var bodyPartDirection of $snake.body) {
             switch (bodyPartDirection) {
@@ -97,7 +97,7 @@ var $snake = {
                 case 't': currentRow -= 1; break;
                 case 'b': currentRow += 1; break;
             }
-            $snake.bodyPartDistribution[currentRow - 1][currentCol - 1] = 1;
+            $snake.bodyPart[currentRow - 1][currentCol - 1] = 1;
         }
     },
     eatapple: function () {
@@ -207,7 +207,7 @@ function setKeyboard() {
 }
 
 //check if the snake hit the boundary
-function ensureDoesNotCollideBorder() {
+function hitBoundary() {
     var nextRow = $snake.head.row, nextCol = $snake.head.col;
     switch ($snake.direction) {
         case 'left': nextCol -= 1; break;
@@ -218,7 +218,8 @@ function ensureDoesNotCollideBorder() {
     return !(nextCol <= 0 || nextRow <= 0 || nextCol > $grid.maxCol || nextRow > $grid.maxRow);
 }
 
-function ensureDoesNotCollideItself() {
+//check if the snake hit itself
+function hitItself() {
     var nextRow = $snake.head.row, nextCol = $snake.head.col;
     switch ($snake.direction) {
         case 'left': nextCol -= 1; break;
@@ -227,7 +228,7 @@ function ensureDoesNotCollideItself() {
         case 'down': nextRow += 1; break;
     }
 
-    return $snake.bodyPartDistribution[nextRow - 1][nextCol - 1] === 0;
+    return $snake.bodyPart[nextRow - 1][nextCol - 1] === 0;
 }
 
 function gameover() {
@@ -238,6 +239,7 @@ function gameover() {
     }
 }
 
+//initialize apple
 function initapple() {
     $apple.coor.row = Math.floor(Math.random() * ($grid.maxRow + 1));
     $apple.coor.col = Math.floor(Math.random() * ($grid.maxCol + 1));
