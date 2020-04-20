@@ -43,6 +43,7 @@ var $grid = {
 var $snake = {
     head: { row: NaN, col: NaN },
     body: [],
+    bodyPartDistribution: [],
     direction: null,
     draw: function () {
         var currentRow = this.head.row, currentCol = this.head.col;
@@ -63,7 +64,7 @@ var $snake = {
         }
     },
     next: function () {
-        if (ensureDoesNotCollideBorder()) {
+        if (ensureDoesNotCollideBorder() && ensureDoesNotCollideItself()) {
             switch (this.direction) {
                 case 'left': this.head.col -= 1; this.body.unshift('r'); break;
                 case 'right': this.head.col += 1; this.body.unshift('l'); break;
@@ -71,8 +72,31 @@ var $snake = {
                 case 'down': this.head.row += 1; this.body.unshift('t'); break;
             }
             this.body.pop();
+            this.updateBodyPartDistribution();
         }
-        else gameover();
+        else {
+            gameover();
+        }
+    },
+    updateBodyPartDistribution: function () {
+        $snake.bodyPartDistribution = [];
+        for (var row = 1; row <= $grid.maxRow; row++) {
+            $snake.bodyPartDistribution.push([]);
+            for (var col = 1; col <= $grid.maxCol; col++) { $snake.bodyPartDistribution[row - 1].push(0); }
+        }
+
+        var currentRow = $snake.head.row, currentCol = $snake.head.col;
+        $snake.bodyPartDistribution[currentRow - 1][currentCol - 1] = 1;
+
+        for (var bodyPartDirection of $snake.body) {
+            switch (bodyPartDirection) {
+                case 'l': currentCol -= 1; break;
+                case 'r': currentCol += 1; break;
+                case 't': currentRow -= 1; break;
+                case 'b': currentRow += 1; break;
+            }
+            $snake.bodyPartDistribution[currentRow - 1][currentCol - 1] = 1;
+        }
     }
 };
 
@@ -113,11 +137,14 @@ function initSnake(direction, headPosition, bodyArray) {
     if (headPosition && headPosition.row && headPosition.col) {
         $snake.head.row = headPosition.row;
         $snake.head.col = headPosition.col;
-    } else {
+    }
+    else {
         $snake.head.row = Math.floor($grid.maxRow / 2);
         $snake.head.col = Math.floor($grid.maxCol / 2);
     }
+
     $snake.body = bodyArray ? bodyArray : ['r', 'r', 'r', 'r', 'r'];
+    $snake.updateBodyPartDistribution();
 }
 
 //draw grid element
@@ -153,6 +180,7 @@ function setKeyboard() {
     });
 }
 
+//check if the snake hit the boundary
 function ensureDoesNotCollideBorder() {
     var nextRow = $snake.head.row, nextCol = $snake.head.col;
     switch ($snake.direction) {
@@ -162,6 +190,18 @@ function ensureDoesNotCollideBorder() {
         case 'down': nextRow += 1; break;
     }
     return !(nextCol <= 0 || nextRow <= 0 || nextCol > $grid.maxCol || nextRow > $grid.maxRow);
+}
+
+function ensureDoesNotCollideItself() {
+    var nextRow = $snake.head.row, nextCol = $snake.head.col;
+    switch ($snake.direction) {
+        case 'left': nextCol -= 1; break;
+        case 'right': nextCol += 1; break;
+        case 'up': nextRow -= 1; break;
+        case 'down': nextRow += 1; break;
+    }
+
+    return $snake.bodyPartDistribution[nextRow - 1][nextCol - 1] === 0;
 }
 
 function gameover() {
