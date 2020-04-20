@@ -123,6 +123,7 @@ var $apple = {
 
 var $score = 0;
 
+//check the device using
 function isMobileTablet() {
     var check = false;
     (function (a) {
@@ -132,6 +133,7 @@ function isMobileTablet() {
     return check;
 }
 
+//adjust the grid size according to the device
 if (!isMobileTablet()) {
     $grid.unitSize = 20;
     $grid.unitGap = 5;
