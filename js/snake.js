@@ -105,6 +105,7 @@ var $snake = {
             $apple.drawApple();
             var new_ele = $snake.body[$snake.body.length - 1];
             $snake.body.push(new_ele);
+            $score++;
         }
     }
 };
@@ -120,6 +121,8 @@ var $apple = {
     }
 }
 
+var $score = 0;
+
 /* Main Function */
 $(document).ready(function () {
     init();
@@ -129,7 +132,7 @@ $(document).ready(function () {
         $ctx = $canvas.element.getContext('2d');
         drawGrid();
         $snake.draw();
-        
+
         var setGameInterval = function () {
             $gameIntervalID = setInterval(function () {
                 $canvas.clear();
@@ -230,7 +233,7 @@ function ensureDoesNotCollideItself() {
 function gameover() {
     clearInterval($gameIntervalID);
     $gameIntervalID = null;
-    if (!window.alert('Game Over!')) {
+    if (!window.alert('Game Over! \nScore: ' + $score)) {
         window.location.reload();
     }
 }
