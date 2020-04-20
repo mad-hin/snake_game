@@ -82,7 +82,9 @@ var $snake = {
         $snake.bodyPartDistribution = [];
         for (var row = 1; row <= $grid.maxRow; row++) {
             $snake.bodyPartDistribution.push([]);
-            for (var col = 1; col <= $grid.maxCol; col++) { $snake.bodyPartDistribution[row - 1].push(0); }
+            for (var col = 1; col <= $grid.maxCol; col++) {
+                $snake.bodyPartDistribution[row - 1].push(0);
+            }
         }
 
         var currentRow = $snake.head.row, currentCol = $snake.head.col;
@@ -97,24 +99,43 @@ var $snake = {
             }
             $snake.bodyPartDistribution[currentRow - 1][currentCol - 1] = 1;
         }
+    },
+    eatapple: function () {
+        if ($snake.head.row === $apple.coor.row && $snake.head.col === $apple.coor.col) {
+            $apple.drawApple();
+        }
     }
 };
+
+var $apple = {
+    coor: { row: NaN, col: NaN },
+    drawApple: function () {
+        var appRow = Math.floor(Math.random() * ($grid.maxRow + 1));
+        var appCol = Math.floor(Math.random() * ($grid.maxCol + 1));
+        $apple.coor.row = appRow;
+        $apple.coor.col = appCol;
+        $grid.drawSquare($apple.coor.row, $apple.coor.col, 'red', 'fill');
+    }
+}
 
 /* Main Function */
 $(document).ready(function () {
     init();
     initSnake();
+    initapple();
     if ($canvas.element.getContext) {
         $ctx = $canvas.element.getContext('2d');
         drawGrid();
         $snake.draw();
-
+        
         var setGameInterval = function () {
             $gameIntervalID = setInterval(function () {
                 $canvas.clear();
                 drawGrid();
                 $snake.draw();
+                $grid.drawSquare($apple.coor.row, $apple.coor.col, 'red', 'fill');
                 $snake.next();
+                $snake.eatapple();
             }, 200);
         }
         setGameInterval();
@@ -210,4 +231,9 @@ function gameover() {
     if (!window.alert('Game Over!')) {
         window.location.reload();
     }
+}
+
+function initapple() {
+    $apple.coor.row = Math.floor(Math.random() * ($grid.maxRow + 1));
+    $apple.coor.col = Math.floor(Math.random() * ($grid.maxCol + 1));
 }
