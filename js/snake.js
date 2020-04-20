@@ -103,6 +103,8 @@ var $snake = {
     eatapple: function () {
         if ($snake.head.row === $apple.coor.row && $snake.head.col === $apple.coor.col) {
             $apple.drawApple();
+            var new_ele = $snake.body[$snake.body.length - 1];
+            $snake.body.push(new_ele);
         }
     }
 };
